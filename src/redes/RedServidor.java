@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * @author Carlos Alberto Campos Armero
  */
 public class RedServidor {
-    private ArrayList<Juego> juegos;  
+    public static ArrayList<Juego> juegos;  
     private ControladorJuego controller;
     private ServerSocket listenSocket;
     private int port;

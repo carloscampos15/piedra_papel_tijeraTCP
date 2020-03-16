@@ -7,6 +7,8 @@ package Controller;
 
 import models.Juego;
 import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Es el encargado de todo lo que tiene que ver con el juego
@@ -63,5 +65,27 @@ public class ControladorJuego {
             juegos.add(nuevoJuego);
         }
         return juegos;
+    }
+    
+    public boolean consultarEstadoJuego(int juego_id){
+        Juego juego = juegos.get(juego_id-1);
+        if(juego.getPlayers().size() == 2){
+            return true;
+        }
+        return false;
+    }
+    
+    public String realizarAccion(Jugador jugador, JSONObject receivedJson) throws JSONException{
+        Juego juego = juegos.get(jugador.getJuego_id() - 1);
+        for(Jugador jugadore : juego.getPlayers()){
+            if(jugadore == jugador){
+                jugadore.setActionGame(receivedJson.getString("action"));
+            }
+        }
+        
+        if(juego.juegoEnLinea()){
+            return juego.calcularGanador();
+        }
+        return("ESPERANDO RESPUESTA DE OTROS JUGADORES");
     }
 }

@@ -9,11 +9,15 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import models.Juego;
 import org.json.JSONException;
 import org.json.JSONObject;
+import redes.RedServidor;
 
 /**
  * Esta encargado de todos los componenten que se requieren para un cliente
+ *
  * @author Karen Dayanna Castaño Orjuela
  * @author Carlos Alberto Campos Armero
  */
@@ -26,12 +30,17 @@ public class Jugador implements Runnable {
     private DataOutputStream salida;
     private Socket clientSocket;
     private ControladorJuego controller;
+    
+    public static final String PIEDRA = "PIEDRA";
+    public static final String PAPEL = "PAPEL";
+    public static final String TIJERAS = "TIJERAS";
 
     public Jugador(Socket clientSocket, DataInputStream entrada, DataOutputStream salida, ControladorJuego controller) {
         this.entrada = entrada;
         this.salida = salida;
         this.clientSocket = clientSocket;
         this.controller = controller;
+        this.actionGame = "";
     }
 
     public String getActionGame() {
@@ -50,6 +59,31 @@ public class Jugador implements Runnable {
         this.juego_id = juego_id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void iniciarSesion(JSONObject receivedJson) throws JSONException, IOException {
+        this.setName(receivedJson.getString("name"));
+        boolean estadoJuego = controller.consultarEstadoJuego(this.juego_id);
+        if (estadoJuego) {
+            ArrayList<Juego> temp = RedServidor.juegos;
+            for (Jugador jugador : temp.get(this.juego_id - 1).getPlayers()) {
+                jugador.salida.writeUTF("EMPIEZA EL JUEGO");
+            }
+        } else {
+            salida.writeUTF("ESPERANDO JUGADORES PARA INICIAR EL JUEGO");
+        }
+    }
+
+    public boolean enviarMensaje() {
+        return true;
+    }
+
     @Override
     public void run() {
         String received;
@@ -57,9 +91,15 @@ public class Jugador implements Runnable {
             try {
                 received = entrada.readUTF();
                 JSONObject receivedJson = new JSONObject(received);
-                
-                
-                
+
+                if (receivedJson.has("name")) {
+                    this.iniciarSesion(receivedJson);
+                } else {
+                    ArrayList<Juego> temp = RedServidor.juegos;
+                    for (Jugador jugador : temp.get(this.juego_id - 1).getPlayers()) {
+                        jugador.salida.writeUTF(controller.realizarAccion(this, receivedJson));
+                    }
+                }
             } catch (IOException | JSONException ex) {
                 System.out.println("<<Error de lectura");
             }
