@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Controller;
+package controllers;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -72,11 +72,12 @@ public class Jugador implements Runnable {
         boolean estadoJuego = controller.consultarEstadoJuego(this.juego_id);
         if (estadoJuego) {
             ArrayList<Juego> temp = RedServidor.juegos;
-            for (Jugador jugador : temp.get(this.juego_id - 1).getPlayers()) {
-                jugador.salida.writeUTF("EMPIEZA EL JUEGO");
-            }
+            ArrayList<Jugador> jugadores = temp.get(this.juego_id - 1).getPlayers();
+            
+            jugadores.get(0).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: "+jugadores.get(1).getName()+", code: 202}");
+            jugadores.get(1).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: "+jugadores.get(0).getName()+", code: 202}");
         } else {
-            salida.writeUTF("ESPERANDO JUGADORES PARA INICIAR EL JUEGO");
+            salida.writeUTF("{response: ESPERANDO JUGADORES PARA INICIAR EL JUEGO..., code: 203}");
         }
     }
 

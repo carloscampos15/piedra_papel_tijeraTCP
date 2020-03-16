@@ -6,8 +6,8 @@
 package redes;
 
 import models.Juego;
-import Controller.ControladorJuego;
-import Controller.Jugador;
+import controllers.ControladorJuego;
+import controllers.Jugador;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

@@ -5,7 +5,7 @@
  */
 package models;
 
-import Controller.Jugador;
+import controllers.Jugador;
 import java.util.ArrayList;
 
 /**
@@ -53,15 +53,15 @@ public class Juego {
     public String calcularGanador() {
         Jugador jugador1 = players.get(0);
         Jugador jugador2 = players.get(1);
-        if ((jugador1.getActionGame().equals(Jugador.PIEDRA) && jugador2.getActionGame().equals(Jugador.TIJERAS))
-                || (jugador1.getActionGame().equals(Jugador.PAPEL) && jugador2.getActionGame().equals(Jugador.PIEDRA))
-                || (jugador1.getActionGame().equals(Jugador.TIJERAS) && jugador2.getActionGame().equals(Jugador.PAPEL))) {
-            return "EL GANADOR ES: " + jugador1.getName();
-        } else if ((jugador2.getActionGame().equals(Jugador.PIEDRA) && jugador1.getActionGame().equals(Jugador.TIJERAS))
-                || (jugador2.getActionGame().equals(Jugador.PAPEL) && jugador1.getActionGame().equals(Jugador.PIEDRA))
-                || (jugador2.getActionGame().equals(Jugador.TIJERAS) && jugador1.getActionGame().equals(Jugador.PAPEL))) {
-            return "EL GANADOR ES: " + jugador2.getName();
+        if ((jugador1.getActionGame().equalsIgnoreCase(Jugador.PIEDRA) && jugador2.getActionGame().equalsIgnoreCase(Jugador.TIJERAS))
+                || (jugador1.getActionGame().equalsIgnoreCase(Jugador.PAPEL) && jugador2.getActionGame().equalsIgnoreCase(Jugador.PIEDRA))
+                || (jugador1.getActionGame().equalsIgnoreCase(Jugador.TIJERAS) && jugador2.getActionGame().equalsIgnoreCase(Jugador.PAPEL))) {
+            return jugador1.getName()+":"+jugador1.getActionGame()+","+jugador2.getName()+":"+jugador2.getActionGame()+", ganador: EL GANADOR ES " + jugador1.getName();
+        } else if ((jugador2.getActionGame().equalsIgnoreCase(Jugador.PIEDRA) && jugador1.getActionGame().equalsIgnoreCase(Jugador.TIJERAS))
+                || (jugador2.getActionGame().equalsIgnoreCase(Jugador.PAPEL) && jugador1.getActionGame().equalsIgnoreCase(Jugador.PIEDRA))
+                || (jugador2.getActionGame().equalsIgnoreCase(Jugador.TIJERAS) && jugador1.getActionGame().equalsIgnoreCase(Jugador.PAPEL))) {
+            return jugador1.getName()+":"+jugador1.getActionGame()+","+jugador2.getName()+":"+jugador2.getActionGame()+", ganador: EL GANADOR ES " + jugador2.getName();
         }
-        return "EMPATE";
+        return jugador1.getName()+":"+jugador1.getActionGame()+","+jugador2.getName()+":"+jugador2.getActionGame()+", ganador: EMPATE";
     }
 }

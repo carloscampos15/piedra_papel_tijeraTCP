@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Controller;
+package controllers;
 
 import models.Juego;
 import java.util.ArrayList;
@@ -84,8 +84,9 @@ public class ControladorJuego {
         }
         
         if(juego.juegoEnLinea()){
-            return juego.calcularGanador();
+            System.out.println("{" + juego.calcularGanador() + ", code: 200}");
+            return "{" + juego.calcularGanador() + ", code: 200}";
         }
-        return("ESPERANDO RESPUESTA DE OTROS JUGADORES");
+        return("{response: ESPERANDO RESPUESTA DEL OPONENTE, code: 201}");
     }
 }
