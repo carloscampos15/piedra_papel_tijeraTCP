@@ -42,6 +42,21 @@ public class Cliente{
         return true;
     }
     
+    public boolean restartGame(String name) throws IOException{
+        this.redCliente.restartGame(name);
+        return true;
+    }
+    
+    public boolean confirmRestartGame(int confirm) throws IOException{
+        this.redCliente.confirmRestartGame(confirm);
+        return true;
+    }
+    
+    public boolean closeGame() throws IOException{
+        this.redCliente.closeGame();
+        return true;
+    }
+    
     public void setNotificableRed(Notificable notificable){
         this.redCliente.setNotificable(notificable);
     }

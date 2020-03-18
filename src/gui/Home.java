@@ -7,9 +7,11 @@ package gui;
 
 import cliente.Cliente;
 import cliente.Notificable;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,11 +37,12 @@ public class Home extends javax.swing.JFrame implements Notificable {
         this.action = "";
         this.cliente.setNotificableRed(this);
         this.cliente.ejecutarCliente();
-        
+
         piedra2.setEnabled(false);
         papel2.setEnabled(false);
         tijeras2.setEnabled(false);
-        
+        reiniciar.setEnabled(false);
+
         try {
             cliente.updateName(cliente.getNombre());
         } catch (IOException ex) {
@@ -136,6 +139,11 @@ public class Home extends javax.swing.JFrame implements Notificable {
         });
 
         reiniciar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/volverJugar.png"))); // NOI18N
+        reiniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reiniciarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -222,6 +230,12 @@ public class Home extends javax.swing.JFrame implements Notificable {
     }//GEN-LAST:event_tijeras2ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        try {
+            cliente.closeGame();
+            this.dispose();
+        } catch (IOException ex) {
+            System.out.println(">>ERROR AL ENVIAR DATOS");
+        }
         this.dispose();
     }//GEN-LAST:event_jButton10ActionPerformed
 
@@ -267,6 +281,16 @@ public class Home extends javax.swing.JFrame implements Notificable {
         }
     }//GEN-LAST:event_tijeras1ActionPerformed
 
+    private void reiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reiniciarActionPerformed
+        textGanador.setText("");
+        try {
+            cliente.restartGame(cliente.getNombre());
+            reiniciar.setEnabled(false);
+        } catch (IOException ex) {
+            System.out.println(">>ERROR AL REINICIAR JUEGO");
+        }
+    }//GEN-LAST:event_reiniciarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton10;
     private javax.swing.JLabel jLabelName;
@@ -289,6 +313,12 @@ public class Home extends javax.swing.JFrame implements Notificable {
 
     @Override
     public void deshabilitarJuego(String mensaje) {
+        this.action = "";
+        reiniciar.setEnabled(false);
+        piedra2.setEnabled(false);
+        papel2.setEnabled(false);
+        tijeras2.setEnabled(false);
+
         piedra1.setEnabled(false);
         papel1.setEnabled(false);
         tijeras1.setEnabled(false);
@@ -297,7 +327,13 @@ public class Home extends javax.swing.JFrame implements Notificable {
     }
 
     @Override
-    public void habilitarJuego(String mensaje) {        
+    public void habilitarJuego(String mensaje) {
+        this.action = "";
+        reiniciar.setEnabled(false);
+        piedra2.setEnabled(false);
+        papel2.setEnabled(false);
+        tijeras2.setEnabled(false);
+
         piedra1.setEnabled(true);
         papel1.setEnabled(true);
         tijeras1.setEnabled(true);
@@ -307,10 +343,10 @@ public class Home extends javax.swing.JFrame implements Notificable {
 
     @Override
     public void jugar(JSONObject receivedJson) {
-        if(receivedJson.has(jLabelName2.getText())){
+        if (receivedJson.has(jLabelName2.getText())) {
             try {
                 String actionOponente = receivedJson.getString(jLabelName2.getText());
-                switch(actionOponente){
+                switch (actionOponente) {
                     case "PIEDRA":
                         piedra2.setEnabled(true);
                         break;
@@ -325,6 +361,25 @@ public class Home extends javax.swing.JFrame implements Notificable {
             } catch (JSONException ex) {
                 System.out.println("ERROR EN VISTA");
             }
+            reiniciar.setEnabled(true);
         }
+    }
+
+    @Override
+    public void notifiacionJuegoNuevo(String mensaje) {
+        int option = JOptionPane.showConfirmDialog(null, mensaje, "CONFIRMAR PARTIDAD", JOptionPane.YES_NO_OPTION);
+
+        try {
+            this.cliente.confirmRestartGame(option);
+            textGanador.setText("");
+        } catch (IOException ex) {
+            System.out.println(">>ERROR DE CONFIRMACION");
+        }
+
+        if (option == 1) {
+            this.dispose();
+        }
+
+        System.out.println(option);
     }
 }

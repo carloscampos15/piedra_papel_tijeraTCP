@@ -11,9 +11,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -77,7 +74,45 @@ public class RedCliente {
         salida.flush();
         return true;
     }
-
+    
+    /**
+     *
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    public boolean restartGame(String name) throws IOException {
+        String message = "{restartGame:TRUE,name:"+name+"}";
+        salida.writeUTF(message);
+        salida.flush();
+        return true;
+    }    
+    
+    /**
+     *
+     * @param confirm
+     * @return
+     * @throws IOException
+     */
+    public boolean confirmRestartGame(int confirm) throws IOException {
+        String message = "{confirmGame:"+confirm+"}";
+        salida.writeUTF(message);
+        salida.flush();
+        return true;
+    }    
+    
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
+    public boolean closeGame() throws IOException {
+        String message = "{closeGame:TRUE}";
+        salida.writeUTF(message);
+        salida.flush();
+        return true;
+    }    
+    
     public Notificable getNotificable() {
         return notificable;
     }

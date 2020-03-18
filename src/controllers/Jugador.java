@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Juego;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +32,8 @@ public class Jugador implements Runnable {
     private DataOutputStream salida;
     private Socket clientSocket;
     private ControladorJuego controller;
-    
+    public boolean isAlive;
+
     public static final String PIEDRA = "PIEDRA";
     public static final String PAPEL = "PAPEL";
     public static final String TIJERAS = "TIJERAS";
@@ -41,6 +44,7 @@ public class Jugador implements Runnable {
         this.clientSocket = clientSocket;
         this.controller = controller;
         this.actionGame = "";
+        this.isAlive = true;
     }
 
     public String getActionGame() {
@@ -73,9 +77,9 @@ public class Jugador implements Runnable {
         if (estadoJuego) {
             ArrayList<Juego> temp = RedServidor.juegos;
             ArrayList<Jugador> jugadores = temp.get(this.juego_id - 1).getPlayers();
-            
-            jugadores.get(0).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: "+jugadores.get(1).getName()+", code: 202}");
-            jugadores.get(1).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: "+jugadores.get(0).getName()+", code: 202}");
+
+            jugadores.get(0).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: " + jugadores.get(1).getName() + ", code: 202}");
+            jugadores.get(1).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: " + jugadores.get(0).getName() + ", code: 202}");
         } else {
             salida.writeUTF("{response: ESPERANDO JUGADORES PARA INICIAR EL JUEGO..., code: 203}");
         }
@@ -85,24 +89,65 @@ public class Jugador implements Runnable {
         return true;
     }
 
+    public ControladorJuego getController() {
+        return controller;
+    }
+
     @Override
     public void run() {
-        String received;
-        while (true) {
-            try {
-                received = entrada.readUTF();
-                JSONObject receivedJson = new JSONObject(received);
+        while (isAlive) {
+            String received;
+            while (true) {
+                try {
+                    received = entrada.readUTF();
+                    JSONObject receivedJson = new JSONObject(received);
 
-                if (receivedJson.has("name")) {
-                    this.iniciarSesion(receivedJson);
-                } else {
-                    ArrayList<Juego> temp = RedServidor.juegos;
-                    for (Jugador jugador : temp.get(this.juego_id - 1).getPlayers()) {
-                        jugador.salida.writeUTF(controller.realizarAccion(this, receivedJson));
+                    if (receivedJson.has("name") && !receivedJson.has("restartGame")) {
+                        this.iniciarSesion(receivedJson);
+                    } else {
+                        ArrayList<Juego> temp = RedServidor.juegos;
+                        ArrayList<Jugador> jugadores = temp.get(this.juego_id - 1).getPlayers();
+                        for (Jugador jugador : temp.get(this.juego_id - 1).getPlayers()) {
+
+                            if (receivedJson.has("restartGame")) {
+                                jugador.actionGame = "";
+                                if (jugador != this) {
+                                    jugador.salida.writeUTF("{response: " + this.getName() + " QUIERE JUGAR DE NUEVO, code: 204}");
+                                    this.salida.writeUTF("{response: INVITACION PARA JUGAR DE NUEVO ENVIADA, code: 205}");
+                                }
+                            } else if (receivedJson.has("confirmGame")) {
+                                if (receivedJson.getInt("confirmGame") == 0) {
+                                    jugadores.get(0).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: " + jugadores.get(1).getName() + ", code: 202}");
+                                    jugadores.get(1).salida.writeUTF("{response: EMPIEZA EL JUEGO, oponente: " + jugadores.get(0).getName() + ", code: 202}");
+                                } else {
+                                    if (this == jugador) {
+                                        jugadores.get(0).salida.writeUTF("{response: ESPERANDO JUGADORES PARA INICIAR EL JUEGO..., code: 203}");
+                                        jugadores.get(1).salida.writeUTF("{response: ESPERANDO JUGADORES PARA INICIAR EL JUEGO..., code: 203}");
+
+                                        temp.get(this.juego_id - 1).getPlayers().remove(this);
+                                        RedServidor.juegos = temp;
+
+                                        this.isAlive = false;
+                                    }
+                                }
+                            } else if (receivedJson.has("closeGame")) {
+                                if (this == jugador) {
+                                    jugadores.get(0).salida.writeUTF("{response: ESPERANDO JUGADORES PARA INICIAR EL JUEGO..., code: 203}");
+                                    jugadores.get(1).salida.writeUTF("{response: ESPERANDO JUGADORES PARA INICIAR EL JUEGO..., code: 203}");
+
+                                    temp.get(this.juego_id - 1).getPlayers().remove(this);
+                                    RedServidor.juegos = temp;
+
+                                    this.isAlive = false;
+                                }
+                            } else if (receivedJson.has("action")) {
+                                jugador.salida.writeUTF(controller.realizarAccion(this, receivedJson));
+                            }
+                        }
                     }
+                } catch (IOException | JSONException ex) {
+                    System.out.println("<<Error de lectura");
                 }
-            } catch (IOException | JSONException ex) {
-                System.out.println("<<Error de lectura");
             }
         }
     }
