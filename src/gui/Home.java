@@ -143,15 +143,21 @@ public class Home extends javax.swing.JFrame implements Notificable {
         });
 
         reiniciar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
+<<<<<<< HEAD
         reiniciar.setAutoscrolls(true);
         reiniciar.setContentAreaFilled(false);
+=======
+>>>>>>> 2e58889f28ad67a5eb2a9d42b2d0d4a665277f38
         reiniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 reiniciarActionPerformed(evt);
             }
         });
+<<<<<<< HEAD
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/linea.png"))); // NOI18N
+=======
+>>>>>>> 2e58889f28ad67a5eb2a9d42b2d0d4a665277f38
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -302,6 +308,7 @@ public class Home extends javax.swing.JFrame implements Notificable {
 
     private void reiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reiniciarActionPerformed
         textGanador.setText("");
+        System.out.println("HOLA MUNDO");
         try {
             cliente.restartGame(cliente.getNombre());
             reiniciar.setEnabled(false);
