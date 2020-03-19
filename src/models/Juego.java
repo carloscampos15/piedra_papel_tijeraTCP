@@ -21,6 +21,7 @@ public class Juego {
 
     public Juego(ArrayList<Jugador> players) {
         this.players = players;
+        this.state = "EN ESPERA";
     }
 
     public ArrayList<Jugador> getPlayers() {
@@ -35,6 +36,14 @@ public class Juego {
         players.add(jugador);
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public boolean juegoEnLinea() {
         int cont = 0;
         for (Jugador jugador : players) {
@@ -44,8 +53,10 @@ public class Juego {
         }
 
         if (players.size() < 2 || cont < 2) {
+            this.state = "EN ESPERA";
             return false;
         } else {
+            this.state = "JUEGO INICIADO";
             return true;
         }
     }
@@ -53,6 +64,7 @@ public class Juego {
     public String calcularGanador() {
         Jugador jugador1 = players.get(0);
         Jugador jugador2 = players.get(1);
+        this.state = "JUEGO TERMINADO";
         if ((jugador1.getActionGame().equalsIgnoreCase(Jugador.PIEDRA) && jugador2.getActionGame().equalsIgnoreCase(Jugador.TIJERAS))
                 || (jugador1.getActionGame().equalsIgnoreCase(Jugador.PAPEL) && jugador2.getActionGame().equalsIgnoreCase(Jugador.PIEDRA))
                 || (jugador1.getActionGame().equalsIgnoreCase(Jugador.TIJERAS) && jugador2.getActionGame().equalsIgnoreCase(Jugador.PAPEL))) {

@@ -40,13 +40,18 @@ public class MensajeEntrada extends Thread {
                 this.notificable.jugar(receivedJson);
                 break;
             case 201:
-                System.out.println(receivedJson);
                 break;
             case 202:
                 this.notificable.habilitarJuego(receivedJson.getString("oponente"));
                 break;
             case 203:
                 this.notificable.deshabilitarJuego(receivedJson.getString("response"));
+                break;
+            case 204:
+                this.notificable.notifiacionJuegoNuevo(receivedJson.getString("response"));
+                break;
+            case 205:
+                System.out.println(receivedJson.getString("response"));
                 break;
         }
         return "";

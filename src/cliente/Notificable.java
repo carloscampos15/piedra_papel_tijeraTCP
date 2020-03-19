@@ -17,4 +17,5 @@ public interface Notificable {
     public void deshabilitarJuego(String mensaje);
     public void habilitarJuego(String mensaje);
     public void jugar(JSONObject receivedJson);
+    public void notifiacionJuegoNuevo(String mensaje);
 }
