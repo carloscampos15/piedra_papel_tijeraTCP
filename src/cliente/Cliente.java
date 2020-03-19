@@ -9,15 +9,22 @@ import java.io.IOException;
 import redes.RedCliente;
 
 /**
+ * Es el encargado de tener todo los componentes de cliente
  *
- * @author carlo
+ * @author Karen Castaño Orjuela Castaño
+ * @author Carlos Alberto Campos Armero
  */
 public class Cliente{
 
     private RedCliente redCliente;
     private String nombre;
     private int puerto;
-
+    
+    /**
+     * Se le asigna el puerto y la direccion ip del clinete para poder conectarse
+     * @param nombre es el nombre del usuario que desea jugar
+     * @throws IOException 
+     */
     public Cliente(String nombre) throws IOException {      
         this.nombre = nombre;
         this.puerto = 9090;

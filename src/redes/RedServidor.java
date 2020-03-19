@@ -47,7 +47,7 @@ public class RedServidor {
         this.ejecutarServicios();
     }
     /**
-     * Se encarga de realizar la conección con el cliente
+     * Se encarga de realizar la conexión con el cliente
      */
     public void ejecutarServicios() {
         try {

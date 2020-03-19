@@ -43,7 +43,10 @@ public class Juego {
     public void setState(String state) {
         this.state = state;
     }
-
+    /**
+     * Si esta conectado una sola persona el juego queda en espera, y si son dos jugadores entonces inicia el juego
+     * @return 
+     */
     public boolean juegoEnLinea() {
         int cont = 0;
         for (Jugador jugador : players) {
@@ -60,7 +63,11 @@ public class Juego {
             return true;
         }
     }
-
+    
+    /**
+     * Segun la acción que realice cada jugador se mira quien es el posible ganador
+     * @return 
+     */
     public String calcularGanador() {
         Jugador jugador1 = players.get(0);
         Jugador jugador2 = players.get(1);

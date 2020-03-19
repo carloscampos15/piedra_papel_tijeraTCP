@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
+ * Es el encargado de procesar los mensajes que entran y salen del cliente
  *
- * @author carlo
+ * @author Karen Dayanna Castaño Orjuela
+ * @author Carlos Alberto Campos Armero
  */
 public class RedCliente {
 
@@ -50,7 +52,7 @@ public class RedCliente {
     }
 
     /**
-     *
+     * Es el nombre del respectivo cliente 
      * @param name
      * @return
      * @throws IOException
@@ -63,7 +65,7 @@ public class RedCliente {
     }
     
     /**
-     *
+     * Es la acción que elige el cliente (pieda paepl o tijera)
      * @param action
      * @return
      * @throws IOException
@@ -76,7 +78,7 @@ public class RedCliente {
     }
     
     /**
-     *
+     * Es el mensaje que se le envia al oponente para preguntar si desea jugar de nuevo con el cliente
      * @param name
      * @return
      * @throws IOException
@@ -89,7 +91,7 @@ public class RedCliente {
     }    
     
     /**
-     *
+     * Es la confirmación que se necesita para reiniciar el juego
      * @param confirm
      * @return
      * @throws IOException
@@ -102,7 +104,7 @@ public class RedCliente {
     }    
     
     /**
-     *
+     * Se encarga de cerrar el juego
      * @return
      * @throws IOException
      */

@@ -9,7 +9,7 @@ import redes.RedServidor;
 import java.io.IOException;
 
 /**
- * 
+ * Es el encargado de iniciar los servicios 
  * @author Karen Dayanna Castaño Orjuela
  * @author Carlos Alberto Campos Armero
  */
